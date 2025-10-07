@@ -1,3 +1,6 @@
+## Hassan Bencheikh
+## Joudar Houssam
+
 # DevSecOps Lab 1: Arithmetic API with Docker & CI/CD Pipeline
 
 ![Python](https://img.shields.io/badge/python-v3.9+-blue.svg)
