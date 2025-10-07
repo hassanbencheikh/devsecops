@@ -64,3 +64,11 @@ The monitoring script provides:
 ## Monitor changes on the Git repository
 
 ![panel](assets/image1.png)
+
+## Python-server
+
+![panel](assets/image2.png)
+
+## built image.
+
+![panel](assets/image3.png)
