@@ -8,15 +8,7 @@
 
 A complete DevSecOps implementation featuring a Python Flask API for arithmetic operations with Docker containerization, automated monitoring, and CI/CD pipeline integration with Docker Hub.
 
-## 🚀 Features
-
-### Arithmetic API Operations
-- **Addition** (`GET /add`)
-- **Subtraction** (`GET /subtract`)
-- **Multiplication** (`GET /multiply`)
-- **Division** (`GET /divide`)
-
-### DevOps Pipeline
+## DevOps Pipeline
 - 🐳 **Docker containerization** with automated builds
 - 📊 **Git repository monitoring** for new commits
 - 🔄 **Automatic rebuild and deployment** on code changes
@@ -66,4 +58,6 @@ The monitoring script provides:
 - ✅ 60-second polling interval
 - ✅ Console logging with timestamps
 
+## Monitor changes on the Git repository
 
+![panel](/assets/image1.png)
