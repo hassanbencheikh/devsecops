@@ -60,4 +60,4 @@ The monitoring script provides:
 
 ## Monitor changes on the Git repository
 
-![panel](/assets/image1.png)
+![panel](assets/image1.png)
