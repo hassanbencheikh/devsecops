@@ -1,38 +1,56 @@
 #!/bin/bash
 
-# Define container and image names
+# Your GitHub repository local path
+REPO_DIR="/home/kali/Desktop/Platforms/SelfLearn/DevSecOps/Lab1"
+
+# Docker container and image names
 IMAGE_NAME="arithmetic-api"
 CONTAINER_NAME="arithmetic-api-container"
-FILE_TO_WATCH="app.py"
 
-echo "Starting initial build and run..."
+# Move to the repository directory
+cd "$REPO_DIR" || { echo "Repo directory $REPO_DIR not found."; exit 1; }
 
-# Stop and remove existing container if it exists
+echo "Starting initial build and deployment..."
+
+# Stop and remove existing container if running
 if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
     docker stop $CONTAINER_NAME
     docker rm $CONTAINER_NAME
 fi
 
-# Build and run the container
+# Initial build and run
 docker build -t $IMAGE_NAME .
 docker run -d --name $CONTAINER_NAME -p 5000:5000 $IMAGE_NAME
 
-echo "Monitoring $FILE_TO_WATCH for changes..."
+# Get the current commit hash
+CURRENT_HASH=$(git rev-parse HEAD)
 
-# Use inotifywait to monitor the file for modifications
-while inotifywait -e modify $FILE_TO_WATCH; do
-    echo "Change detected in $FILE_TO_WATCH. Rebuilding and redeploying..."
+echo "Monitoring GitHub repository (https://github.com/hassanbencheikh/devsecops.git) for new commits..."
 
-    # Stop and remove the old container
-    docker stop $CONTAINER_NAME
-    docker rm $CONTAINER_NAME
+while true; do
+    git fetch origin
 
-    # Rebuild the Docker image
-    docker build -t $IMAGE_NAME .
+    REMOTE_HASH=$(git rev-parse origin/main)
 
-    # Run the new container
-    docker run -d --name $CONTAINER_NAME -p 5000:5000 $IMAGE_NAME
+    if [ "$CURRENT_HASH" != "$REMOTE_HASH" ]; then
+        echo "New commit detected ($REMOTE_HASH). Pulling changes and deploying..."
+        
+        git pull origin main
+        
+        CURRENT_HASH=$REMOTE_HASH
+        
+        # Stop and remove old container
+        docker stop $CONTAINER_NAME
+        docker rm $CONTAINER_NAME
 
-    echo "Container updated successfully. Monitoring again..."
+        # Build and run updated container
+        docker build -t $IMAGE_NAME .
+        docker run -d --name $CONTAINER_NAME -p 5000:5000 $IMAGE_NAME
+        
+        echo "Deployment updated successfully."
+    else
+        echo "No new commits detected. Checking again in 60 seconds..."
+    fi
+
+    sleep 60
 done
-
